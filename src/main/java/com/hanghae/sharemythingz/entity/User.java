@@ -18,6 +18,9 @@ public class User extends BaseTimeEntity {
     @Column(unique = true, nullable = true)
     private String username;
 
+    @Column(nullable = true)
+    private Long kakaoId;
+
     @Column(nullable = false)
     private String password;
 
@@ -38,4 +41,19 @@ public class User extends BaseTimeEntity {
         this.role = role;
         this.image_url = image_url;
     }
+
+    public User(String username, String password, String email, UserRoleEnum role, String image_url, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.image_url = image_url;
+        this.kakaoId = kakaoId;
+    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
+    }
+
 }
