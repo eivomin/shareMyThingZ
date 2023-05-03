@@ -23,6 +23,7 @@
 } else {
     $('#user').text(response);
     $('#writer').text(response);
+    $('#commentwriter').val(response);
 }
 },
     error(error, status, request) {

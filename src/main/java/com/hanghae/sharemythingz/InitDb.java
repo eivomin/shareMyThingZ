@@ -1,6 +1,7 @@
 package com.hanghae.sharemythingz;
 
 import com.hanghae.sharemythingz.entity.Board;
+import com.hanghae.sharemythingz.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,5 +46,6 @@ public class InitDb {
             board.setBoard_name(name);
             return board;
         }
+
     }
 }

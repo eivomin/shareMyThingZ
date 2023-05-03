@@ -22,6 +22,7 @@
   </style>
   <script>
 
+
     $(document).ready(function () {
       let p_id = $("#p_id").val();
 
@@ -77,20 +78,21 @@
                               <div class="like_count">좋아요 ${like}개</div>
                             </div>`;
                 $('.tmp').append(tmp_html);
-              });
 
-               //댓글 부분
+                //댓글 부분
 
                 $('#replyBox').empty();
 
-                  comments.forEach((a) => {
-                  let r_id = a['_id'];
-                  let user_id = a['user_id'];
-                  let comment = a['comment'];
-                  let reg_date = a['reg_date'];
+                console.log(comments);
+
+                comments.forEach((a) => {
+                  let r_id = a['id'];
+                  let user_name = a['username'];
+                  let comment = a['content'];
+                  let reg_date = a['createdDate'];
 
                   let temp_html = `<div class="reply-data" id="reply${r_id}">
-                                      <input id="replyName${r_id}" value="${user_id}" style="font-weight: bolder;" disabled/>
+                                      <input id="replyName${r_id}" value="${user_name}" style="font-weight: bolder;" disabled/>
                                       <input id="replyComment${r_id}" value="${comment}" disabled/>
                                       <p style="color: gray;">(${reg_date})</p>
                                       <div id="reply-edit-btn${r_id}"><button id="${r_id}" onclick="modifycomment(this)" >수정</button></div>
@@ -100,7 +102,38 @@
                                   </div>`;
                   $('#replyBox').append(temp_html);
                 });
+              });
 
+
+
+    }
+
+    function postingcomment() {
+
+      const auth = getToken();
+
+      let comment = $('#commentcontent').val();
+      let p_id = $("#p_id").val();
+
+      $.ajax({
+        type: 'POST',
+        url: `/api/comments`,
+        contentType: "application/json",
+        data: JSON.stringify({postId: p_id,
+          content: comment}),
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", auth);
+        },
+        success: function (response) {
+          alert('댓글 등록 성공!');
+          window.location.reload();
+        },
+        error(error, status, request) {
+          console.error(error);
+          alert('댓글 등록 실패!');
+          window.location.href = host + "/api/user/login-page";
+        }
+      });
     }
 
     function newPage(e) {
@@ -299,7 +332,6 @@
     <div class="body">
       <div class="body-title">
         <div class="body-title-head">
-          <input type="hidden" id="p_id" name="p_id" th:value="${p_id}">
           <h1 class="title-text" id="detailtitle">뉴진스의 하입보이요</h1>
           <img src="/image/underline_black.png" class="underline" alt="">
         </div>
@@ -340,8 +372,9 @@
       <div class="reply">
         <!-- ===댓글작성===================== -->
         <div class="reply-box">
-          <input type="text" class="reply-name" id="writer" placeholder="작성자"><br>
-          <input type="text" class="reply-text" id="comment" placeholder="댓글을 남겨주세요!">
+          <input type="hidden" id="p_id" name="p_id" th:value="${p_id}">
+          <input type="text" class="reply-name" id="commentwriter" placeholder="작성자" readonly><br>
+          <input type="text" class="reply-text" id="commentcontent" placeholder="댓글을 남겨주세요!">
           <button class="reply-btn" onclick="postingcomment()">댓글 남기기<br>💬</button>
         </div>
         <!-- ===댓글============= -->

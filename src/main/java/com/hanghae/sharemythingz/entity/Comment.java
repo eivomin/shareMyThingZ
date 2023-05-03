@@ -35,19 +35,27 @@ public class Comment extends BaseEntity{
     @Column(nullable = false)
     private Long like_cnt;
 
+    @ColumnDefault("0")
     @Column(nullable = false)
     private Long group_id;
 
     public Comment(CommentRequestDto requestDto, Post post, User user) {
-        super();
+        this.content = requestDto.getContent();
+        this.post = post;
+        this.user = user;
+        this.like_cnt = 0L;
+        this.group_id = 0L;
     }
 
-    public void update(CommentRequestDto requestDto) {
+    public void update(CommentRequestDto requestDto){
+        this.content = requestDto.getContent();
     }
 
-    public void addLike() {
+    public void addLike(){
+        this.like_cnt += 1;
     }
 
-    public void deleteLike() {
+    public void deleteLike(){
+        this.like_cnt -= 1;
     }
 }
