@@ -45,9 +45,10 @@ public class WebSecurityConfig {
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests().antMatchers("/api/user/**").permitAll()
-                .antMatchers("/api/board").permitAll()
-                .antMatchers("/api/posts").permitAll()
+        http.authorizeRequests()
+                .antMatchers("/api/user/**").permitAll()
+                .antMatchers("/api/board/**").permitAll()
+                .antMatchers("/api/posts/**").permitAll()
                 .antMatchers("/image/**").permitAll()
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
                 .anyRequest().authenticated()
@@ -55,7 +56,7 @@ public class WebSecurityConfig {
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 
-        http.formLogin().loginPage("/api/board").permitAll();
+        http.formLogin().loginPage("/api/board/1").permitAll();
 
         http.exceptionHandling().accessDeniedPage("/api/user/forbidden");
 

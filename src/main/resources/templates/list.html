@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
+
 <head>
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
@@ -15,37 +16,93 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <link href="/css/style.css" rel="stylesheet" type="text/css" />
     <title>Category</title>
+
+    <style>
+
+    </style>
+    <script>
+
+        $(document).ready(function () {
+            $('#cards-box').empty();
+            listing();
+        });
+
+        function listing() {
+            let board_id = $("#board_id").val();
+
+            fetch(`/api/board/`+board_id+`/posts`)
+                .then((res) => res.json())
+                .then((data) => {
+                    $('.body-home').empty()
+                    $('#cards-box').empty();
+
+                    data.forEach((a) => {
+                        let title = a['title'];
+                        let desc = a['content'];
+                        let image = a['img_url'];
+                        let comment = a['content'];
+                        let writer = a['username'];
+                        let boardId = a['boardId'];
+                        let p_id = a['id'];
+                        let reg_date = a['createdDate'];
+
+                        let jsDate = new Intl.DateTimeFormat('kr').format(
+                            new Date(reg_date)
+                        );
+
+                        let temp_html = `<div class="col">
+                      <div class="card h-100">
+                        <img
+                          src="${image}"
+                          class="card-img-top cursor"
+                          onclick="newPage(this)"
+                          id="${p_id}"
+                        />
+                        <div class="card-body">
+                          <h5 class="card-title">${title}</h5>
+                          <p>${writer}</p>
+                          <p class="mycomment text-flow">${comment}</p>
+                          <p style="color: gray;">(${jsDate})</p>
+                        </div>
+                      </div>
+                    </div>`;
+
+                        $('#cards-box').append(temp_html);
+                    });
+                });
+        }
+
+        function newPage(e) {
+            let p_id = $(e).attr('id');
+            window.location.href=`/api/board/posts/${p_id}`;
+        }
+    </script>
 </head>
 
 <body>
-
 <!-- 회원가입 모달창 -->
 <div class="sign-up-black-bg">
     <div class="sign-up-bg">
         <h1 style="font-family:'PyeongChangPeace-Bold'; text-align: center;">환영합니다!</h1>
         <div class="sign-up-box">
-            <form id="signForm" method="POST" action="/api/user/signup">
             <div class="sign-up-inside">
                 <p>닉네임</p>
-                    <input type="text" placeholder="6글자 미만" id="username" name="username"/>
+                <form>
+                    <input type="text" placeholder="6글자 미만" id="sign-ni-Box" />
+                </form>
+            </div>
+            <div class="sign-up-inside">
+                <p>아이디</p>
+                <form>
+                    <input type="text" placeholder="6글자 이상" id="sign-id-Box" />
+                </form>
             </div>
             <div class="sign-up-inside">
                 <p>비밀번호</p>
-                    <input type="password" placeholder="6글자 이상" id="password" name="password"/>
+                <form>
+                    <input type="password" placeholder="6글자 이상" id="sign-pw-Box" />
+                </form>
             </div>
-            <div class="sign-up-inside">
-                <p>이메일</p>
-                    <input type="text" placeholder="6글자 미만" id="email" name="email"/>
-            </div>
-            <div class="sign-up-inside">
-                <p>대표 이미지 url</p>
-                    <input type="text" placeholder="6글자 미만" id="image_url" name="image_url"/>
-            </div>
-            <div>
-                <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;">관리자
-                <input id="admin-token" type="password" name="adminToken" placeholder="관리자 암호" class="login-input-box" style="display:none">
-            </div>
-            </form>
         </div>
         <div style="text-align: center">
             <button type="submit" class="sign-up-btn send-btn" id="sign-up-send" onclick="register()">
@@ -98,10 +155,9 @@
         <h1 style="text-align: center; font-family: PyeongChangPeace-Bold">
             '취향'을 공유하세요!
         </h1>
-
+        <form id="writeForm">
         <div class="write-box">
             <div class="write-box-inside">
-                <form>
                 <p>카테고리</p>
                     <select id="cateBox" size="1">
                         <option value="1">영화</option>
@@ -110,6 +166,7 @@
                         <option value="4">운동</option>
                         <option value="5">책</option>
                     </select>
+            </div>
             <div class="write-box-inside">
                 <p>타이틀</p>
                     <input type="text" class="text-box" placeholder="타이틀을 입력해주세요" id="titleBox" />
@@ -119,8 +176,7 @@
                     <input type="text" class="text-box" id="urlBox" placeholder="URL을 입력해주세요" />
             </div>
             <div class="write-box-inside">
-                <p>작성자</p>
-                <span id="user"></span>
+                <p id="writer"></p>
             </div>
             <div class="write-box-inside">
                 <p>코멘트</p>
@@ -128,15 +184,16 @@
             </div>
             <div style="clear: both"></div>
         </div>
+
         <div style="text-align: center">
-            <button type="submit" class="write-btn send-btn" id="send" onclick="posting()">
+            <button type="button" class="write-btn send-btn" id="send" onclick="writePost()">
                 전송
             </button>
             <button type="button" class="write-btn close-btn" id="close">
                 닫기
             </button>
-            </form>
         </div>
+        </form>
     </div>
 </div>
 <!-- header 부분 -->
@@ -146,6 +203,14 @@
             <a onclick="window.location.href='/'">
                 <img src="/image/logo_image.png" class="logo" alt="">
             </a>
+            <th:block th:switch="${board_id}">
+                <p id="changeLogo" th:case="1">영화</p>
+                <p id="changeLogo" th:case="2">음악</p>
+                <p id="changeLogo" th:case="3">애니</p>
+                <p id="changeLogo" th:case="4">운동</p>
+                <p id="changeLogo" th:case="5">책</p>
+            </th:block>
+            <input type="hidden" id="board_id" name="board_id" th:value="${board_id}">
             <div id="login-true" style="display: none">
                 <div id="header-title-login-user">
                     <div id="user"></div> 님의
@@ -245,6 +310,10 @@
         }
         if ($('#sign-pw-Box').val() === '') {
             alert('비밀번호를 입력해주세요')
+            e.preventDefault()
+        }
+        if ($('#sign-pw-Box').val().length < 6) {
+            alert('비밀번호를 6자 이상 입력해주세요')
             e.preventDefault()
         }
     })
