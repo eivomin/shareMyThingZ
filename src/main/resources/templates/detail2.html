@@ -79,14 +79,11 @@
                 $('.tmp').append(tmp_html);
               });
 
-      //댓글 부분
-      fetch(`/posts/${id}/comments`)
-              .then((res) => res.json())
-              .then((data) => {
-                console.log(data);
+               //댓글 부분
+
                 $('#replyBox').empty();
-                let rows = data['result'];
-                rows.forEach((a) => {
+
+                  comments.forEach((a) => {
                   let r_id = a['_id'];
                   let user_id = a['user_id'];
                   let comment = a['comment'];
@@ -103,7 +100,7 @@
                                   </div>`;
                   $('#replyBox').append(temp_html);
                 });
-              });
+
     }
 
     function newPage(e) {
