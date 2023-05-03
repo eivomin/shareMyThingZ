@@ -68,32 +68,11 @@ public class PostController {
 
     /* 게시글 좋아요 api */
     @PostMapping("/api/posts/{id}/like")
-    public ResponseEntity<StatusResponseDto> likePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public void likePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         boolean likeCheck = postService.saveLikes(id, userDetails.getUser());
 
-        if(likeCheck) {
-            StatusResponseDto res = new StatusResponseDto(
-                    200,
-                    HttpStatus.OK,
-                    "게시글 좋아요 성공"
-            );
-            return new ResponseEntity<>(res, res.getHttpStatus());
-        }else throw new IllegalStateException("게시글 좋아요 실패");
+        if(!likeCheck) {
+            boolean check2 = postService.deleteLikes(id, userDetails.getUser());
+        }
     }
-
-    /* 게시글 싫어요 api */
-    @DeleteMapping("/api/posts/{id}/like")
-    public ResponseEntity<StatusResponseDto> dislikePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        boolean dislikeCheck = postService.deleteLikes(id, userDetails.getUser());
-
-        if(dislikeCheck) {
-            StatusResponseDto res = new StatusResponseDto(
-                    200,
-                    HttpStatus.OK,
-                    "게시글 싫어요 성공"
-            );
-            return new ResponseEntity<>(res, res.getHttpStatus());
-        }else throw new IllegalStateException("게시글 싫어요 실패");
-    }
-
 }

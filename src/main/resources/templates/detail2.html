@@ -72,7 +72,7 @@
                 $('.body-text').append(detail_comment);
 
                 let tmp_html = `<div class="heart">
-                              <button class="heart-btn" onclick="addLike(${like})">
+                              <button class="heart-btn" onclick="addLike()">
                                 <i class="far fa-heart fa-2x"></i>
                               </button>
                               <div class="like_count">좋아요 ${like}개</div>
@@ -181,6 +181,31 @@
         error(error, status, request) {
           console.error(error);
           alert('댓글 삭제 실패!');
+          window.location.reload();
+        }
+      });
+    }
+
+    //게시글 좋아요 업데이트
+    function addLike() {
+
+      const auth = getToken();
+      let p_id = $("#p_id").val();
+
+      $.ajax({
+        type: 'POST',
+        url: `/api/posts/`+p_id+`/like`,
+        contentType: "application/json",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", auth);
+        },
+        success: function (response) {
+          alert('게시글 좋아요 성공!');
+          window.location.reload();
+        },
+        error(error, status, request) {
+          console.error(error);
+          alert('게시글 좋아요 실패!');
           window.location.reload();
         }
       });

@@ -65,9 +65,11 @@ public class Post extends BaseEntity{
     public void update(PostRequestDto requestDto) {
     }
 
-    public void addLike() {
+    public void addLike(){
+        this.like_cnt += 1;
     }
 
-    public void deleteLike() {
+    public void deleteLike(){
+        this.like_cnt -= 1;
     }
 }
