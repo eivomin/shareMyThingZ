@@ -136,6 +136,56 @@
       });
     }
 
+    //게시글 삭제
+    function deletepost() {
+
+      const auth = getToken();
+
+      let p_id = $("#p_id").val();
+
+      $.ajax({
+        type: 'DELETE',
+        url: `/api/posts/`+p_id,
+        contentType: "application/json",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", auth);
+        },
+        success: function (response) {
+          alert('게시글 삭제 성공!');
+          window.location.href='/';
+        },
+        error(error, status, request) {
+          console.error(error);
+          alert('게시글 삭제 실패!');
+          window.location.href = host + "/api/user/login-page";
+        }
+      });
+    }
+
+    //댓글 삭제
+    function deletecomment(r_id) {
+
+      const auth = getToken();
+
+      $.ajax({
+        type: 'DELETE',
+        url: `/api/comments/`+r_id,
+        contentType: "application/json",
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader("Authorization", auth);
+        },
+        success: function (response) {
+          alert('댓글 삭제 성공!');
+          window.location.reload();
+        },
+        error(error, status, request) {
+          console.error(error);
+          alert('댓글 삭제 실패!');
+          window.location.reload();
+        }
+      });
+    }
+
     function newPage(e) {
       let p_id = $(e).attr('id');
       window.location.href=`/api/board/posts/${p_id}`;
@@ -361,7 +411,7 @@
         </div>
       </div>
       <div class="tmp " style="float:none; clear:both;"></div>
-      <!-- =====좋아요버튼과 개수============= -->
+      <!-- =====좋아요버튼과 개수========요===== -->
       <!-- ======================= -->
       <div style="float:none; clear:both;"></div>
       <div class="body-btn">

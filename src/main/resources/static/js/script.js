@@ -63,7 +63,7 @@
             success: function (response, status, xhr) {
             if(response === 'success') {
             let host = window.location.host;
-            let url = host + '/api/board/1';
+            let url = host + '/';
 
             document.cookie =
             'Authorization' + '=' + xhr.getResponseHeader('Authorization') + ';path=/';
