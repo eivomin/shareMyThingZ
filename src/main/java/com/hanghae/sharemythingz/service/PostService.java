@@ -43,6 +43,12 @@ public class PostService {
                 .map(PostResponseDto::new);
     }
 
+    /* 게시글 검색 조회 */
+    public Page<PostResponseDto> postSearchList(String searchKeyword, Pageable pageable){
+        return postRepository.findByTitleContaining(searchKeyword, pageable)
+                .map(PostResponseDto::new);
+    }
+
     /* 게시글 수정
      * ADMIN 회원은 모든 게시글 수정 가능
      *  */

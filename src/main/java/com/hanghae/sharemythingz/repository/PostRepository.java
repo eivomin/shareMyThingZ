@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdAndUserId(Long id, Long userId);
     Page<Post> findByBoardIdOrderByLastModifiedDateDesc(Long boardId, Pageable pageable);
+    Page<Post> findByTitleContaining(String searchKeyword, Pageable pageable);
 }
