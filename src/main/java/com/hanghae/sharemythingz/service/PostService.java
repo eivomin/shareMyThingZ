@@ -11,6 +11,8 @@ import com.hanghae.sharemythingz.repository.PostLikeRepository;
 import com.hanghae.sharemythingz.repository.PostRepository;
 import com.hanghae.sharemythingz.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,15 +37,10 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    /* 게시글 전체 조회 */
-    public List<PostResponseDto> getPosts(Long board_id) {
-        List<Post> postList = postRepository.findPostsByBoardIdOrderByLastModifiedDateDesc(board_id);
-        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-        for(Post post : postList){
-            PostResponseDto postResponseDto = new PostResponseDto(post);
-            postResponseDtoList.add(postResponseDto);
-        }
-        return postResponseDtoList;
+    /* 게시글 전체 조회 (페이징 기능 추가) */
+    public Page<PostResponseDto> findAll(Long board_id, Pageable pageable) {
+        return postRepository.findByBoardIdOrderByLastModifiedDateDesc(board_id, pageable)
+                .map(PostResponseDto::new);
     }
 
     /* 게시글 수정

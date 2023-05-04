@@ -6,6 +6,8 @@ import com.hanghae.sharemythingz.dto.StatusResponseDto;
 import com.hanghae.sharemythingz.security.UserDetailsImpl;
 import com.hanghae.sharemythingz.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,10 +28,10 @@ public class PostController {
         return postService.createPost(requestDto, userDetails.getUser());
     }
 
-    /* 게시글 전체 목록 조회 api */
+    /* 게시글 전체 조회 페이징 api */
     @GetMapping("/api/board/{id}/posts")
-    public List<PostResponseDto> getPosts(@PathVariable Long id){
-        return postService.getPosts(id);
+    public List<PostResponseDto> find(@PathVariable Long id, @PageableDefault(size = 7) Pageable pageable){
+        return postService.findAll(id, pageable).getContent();
     }
 
     /* 게시글 상세 조회 이동 api */
